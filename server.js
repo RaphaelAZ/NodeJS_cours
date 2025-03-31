@@ -1,15 +1,18 @@
-const http = require('http');
-const app = require('./app');
+const http = require("http");
+const app = require("./app");
 
-const port = 6000;
+const port = 3000;
+
 const server = http.createServer(app);
 
-server.on('error', function (err) {
-    console.log(err);
+
+server.on("error", (error) => {
+    console.log(error);
     process.exit(1);
 });
-server.on('listening', function () {
-    console.log('Server is listening on port' + port);
+
+server.on("listening", () => {
+    console.log(`Server is listening on port ${port}`);
 });
 
 server.listen(port);

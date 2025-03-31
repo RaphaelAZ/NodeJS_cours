@@ -1,20 +1,33 @@
-const express = require('express');
-const userRoutes = require('./route/main.route');
-
+const express = require("express");
 const app = express();
 
+const authMiddleware = require('./middleware/auth.middleware');
+
+const {connect} = require('./database/connection.js');
+
+//always return json objects
 app.use(express.json());
 
-app.use('/', (req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "GET, POST");
+const database = async () => {
+    await connect();
+}
+
+database();
+
+const productRoute = require("./routes/product.route");
+const authRoute = require("./routes/auth.route");
+
+//common headers
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', "GET, POST");
+
     next();
 });
 
-app.use('/home', (req, res) => {
-    res.status(200).json("success");
-});
 
-app.use('/user', userRoutes);
+app.use('/auth', authRoute);
+
+app.use('/product', authMiddleware, productRoute);
 
 module.exports = app;
