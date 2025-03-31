@@ -8,28 +8,42 @@ router.post('/signin', async (req, res) => {
     res.status(201).json(user);
 });
 
-router.post('/login', (req, res) => {
-    res.status(200).json(jwt.sign({
-        firstName: 'John',
-        lastName: 'Elden Ring'
-    }, "iohnhfviuzrenbé415196zakfdsvi"));
+router.post('/login', async (req, res) => {
+    let user = await User.findOne({username: req.body.username, password: req.body.password});
+    if (!user) {
+        return res.status(401).json({message: "Invalid credentials"});
+    }
+    let token = jwt.sign({id: user._id}, "METTRELAKEYJWT", {expiresIn: '1h'});
+    res.status(200).json({token});
 });
 
 router.get('/:id',async (req,res) => {
-    let user = await User.findOne({_id: req.params.id});
+    let user = await User.findById(req.params.id);
+    if (!user) {
+        return res.status(404).json({message: "User not found"});
+    }
     res.status(200).json(user);
 });
 
 router.get('/',async (req,res) => {
-
+    let users = await User.find();
+    res.status(200).json(users);
 });
 
 router.put('/:id',async (req,res) => {
-    
+    let user = await User.findByIdAndUpdate(req.params.id, req.body);
+    if (!user) {
+        return res.status(404).json({message: "User not found"});
+    }
+    res.status(200).json(user);
 });
 
 router.delete('/:id',async (req,res) => {
-    
+    let user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+        return res.status(404).json({message: "User not found"});
+    }
+    res.status(200).json({message: "User deleted"});
 });
 
 
