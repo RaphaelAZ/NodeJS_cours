@@ -5,12 +5,12 @@ const user = new Schema({
     email: {
         type: String,
         unique: true,
-        required: true,
-        validate: function(v) {
-            return /.+@.+/.test(v);
+        validate: function(value){
+            return /.+@.+/.test(value);
         }
     },
-    password: String
+    password: String,
+    roles: Array
 });
 
 const User = mongoose.model('User',user);
