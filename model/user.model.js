@@ -2,7 +2,14 @@ const  { Schema } = require("mongoose");
 const mongoose = require("mongoose");
 
 const user = new Schema({
-    email: String,
+    email: {
+        type: String,
+        unique: true,
+        required: true,
+        validate: function(v) {
+            return /.+@.+/.test(v);
+        }
+    },
     password: String
 });
 
